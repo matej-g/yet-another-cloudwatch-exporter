@@ -184,7 +184,7 @@ func getMetricDataForQueries(
 }
 
 func getFilteredMetricDatas(logger logging.Logger, region string, accountID *string, namespace string, customTags []model.Tag, tagsOnMetrics model.ExportedTagsOnMetrics, dimensionRegexps []*regexp.Regexp, resources []*model.TaggedResource, metricsList []*cloudwatch.Metric, dimensionNameList []string, m *config.Metric) (getMetricsData []model.CloudwatchData) {
-	associator := newMetricsToResourceAssociator(dimensionRegexps, resources)
+	associator := NewMetricsToResourceAssociator(dimensionRegexps, resources)
 
 	logger.Debug("FilterMetricData DimensionsFilter", "dimensionsFilter", associator)
 
@@ -199,7 +199,7 @@ func getFilteredMetricDatas(logger logging.Logger, region string, accountID *str
 		}
 
 		// TODO: refactor this logic after failing scenarios are fixed
-		matchedResource, skip := associator.associateMetricsToResources(cwMetric)
+		matchedResource, skip := associator.AssociateMetricsToResources(cwMetric)
 		if matchedResource != nil {
 			resource = matchedResource
 		}
