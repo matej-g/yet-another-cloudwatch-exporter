@@ -17,9 +17,9 @@ type valueToResource map[string]*model.TaggedResource
 // metricsToResourceAssociator contains for each dimension, the matched values and resources.
 type metricsToResourceAssociator map[string]valueToResource
 
-// newMetricsToResourceAssociator creates a new metricsToResourceAssociator given a set of dimensions regexs that can extract
+// NewMetricsToResourceAssociator creates a new metricsToResourceAssociator given a set of dimensions regexs that can extract
 // dimensions from a resource ARN, and a set of resources from which to extract.
-func newMetricsToResourceAssociator(dimensionRegexps []*regexp.Regexp, resources []*model.TaggedResource) metricsToResourceAssociator {
+func NewMetricsToResourceAssociator(dimensionRegexps []*regexp.Regexp, resources []*model.TaggedResource) metricsToResourceAssociator {
 	dimensionsFilter := make(map[string]valueToResource)
 	for _, dimensionRegexp := range dimensionRegexps {
 		names := dimensionRegexp.SubexpNames()
@@ -45,10 +45,10 @@ func newMetricsToResourceAssociator(dimensionRegexps []*regexp.Regexp, resources
 	return dimensionsFilter
 }
 
-// associateMetricsToResources finds for a cloudwatch.Metrics, the resource that matches the better. If no match is found,
+// AssociateMetricsToResources finds for a cloudwatch.Metrics, the resource that matches the better. If no match is found,
 // nil is returned. Also, there's some conditions in which the metric shouldn't be considered, and that is dictated by the
 // skip return value.
-func (asoc metricsToResourceAssociator) associateMetricsToResources(cwMetric *cloudwatch.Metric) (r *model.TaggedResource, skip bool) {
+func (asoc metricsToResourceAssociator) AssociateMetricsToResources(cwMetric *cloudwatch.Metric) (r *model.TaggedResource, skip bool) {
 	alreadyFound := false
 	for _, dimension := range cwMetric.Dimensions {
 		if dimensionFilterValues, ok := asoc[*dimension.Name]; ok {
